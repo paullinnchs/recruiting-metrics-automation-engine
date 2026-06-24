@@ -1,0 +1,26 @@
+[
+  {
+    "req_id": "REQ-001",
+    "job_title": "Customer Success Manager",
+    "department": "Revenue",
+    "opened_date": "2026-05-01",
+    "filled_date": "2026-05-29",
+    "candidate_id": "CAND-1001",
+    "candidate_source": "LinkedIn",
+    "application_completed": true,
+    "offer_extended": true,
+    "offer_accepted": true
+  },
+  {
+    "req_id": "REQ-002",
+    "job_title": "Recruiter",
+    "department": "Talent Acquisition",
+    "opened_date": "2026-05-03",
+    "filled_date": null,
+    "candidate_id": "CAND-1002",
+    "candidate_source": "Indeed",
+    "application_completed": false,
+    "offer_extended": false,
+    "offer_accepted": false
+  }
+]

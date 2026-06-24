@@ -1,0 +1,87 @@
+# connections.yaml
+# ─────────────────────────────────────────────
+# Connection configuration for all platform integrations.
+# Store secrets in environment variables — never hardcode API keys here.
+#
+# Copy this file, fill in your values, and never commit the result to git.
+# Add connections.yaml to your .gitignore.
+#
+# Part of: recruiting-metrics-automation-engine
+# Author:  Paul Linn Solutions (PLS)
+
+# ── ATS ──────────────────────────────────────
+# Supported platforms: greenhouse | lever | workday | icims | jobvite | generic_rest
+
+ats:
+  platform: greenhouse                         # change to match your ATS
+  base_url: https://harvest.greenhouse.io/v1
+  api_key: "${ATS_API_KEY}"                    # set in environment
+
+# ── HRIS ─────────────────────────────────────
+# Supported: rippling | bamboohr | workday | adp | generic_rest
+
+hris:
+  platform: rippling
+  base_url: https://app.rippling.com/api/o/v1
+  api_key: "${HRIS_API_KEY}"
+
+# ── SURVEY TOOL ──────────────────────────────
+# Supported: typeform | qualtrics | google_forms
+
+survey:
+  platform: typeform
+  base_url: https://api.typeform.com
+  api_key: "${SURVEY_API_KEY}"
+  form_ids:
+    candidate_experience: "abc123"
+    hiring_manager_satisfaction: "def456"
+    candidate_job_satisfaction: "ghi789"
+
+# ── AD PLATFORMS ─────────────────────────────
+# Used for Metric 5: Sourcing Channel Cost
+
+ad_platforms:
+  linkedin:
+    api_key: "${LINKEDIN_ADS_KEY}"
+    account_id: "${LINKEDIN_ACCOUNT_ID}"
+  indeed:
+    api_key: "${INDEED_ADS_KEY}"
+
+# ── ALERTING ─────────────────────────────────
+
+alerting:
+  slack_webhook: "${SLACK_WEBHOOK_URL}"
+  email_recipients:
+    - ta_leader@yourcompany.com
+    - hrbp@yourcompany.com
+  email_smtp:
+    host: smtp.gmail.com
+    port: 587
+    user: "${SMTP_USER}"
+    password: "${SMTP_PASSWORD}"
+
+# ── OVERRIDES (no API connection needed) ─────
+# Use these when you don't have a live connection yet
+# or want to seed static values for testing.
+
+headcount_override: 500              # used for Metric 15: % open positions
+recruiting_spend_override:           # used for Metric 12: Cost per hire
+  job_boards: 12000
+  agency_fees: 45000
+  recruiter_salaries: 78000
+  tools_and_ats: 8000
+
+ad_spend_override:                   # used for Metric 5: Sourcing channel cost
+  linkedin: 4200
+  indeed: 1800
+  glassdoor: 600
+  employee_referral: 0
+
+funnel_stages:                       # used for Metric 17: Funnel effectiveness
+  - applied
+  - phone_screen
+  - hiring_manager_review
+  - interview
+  - final_round
+  - offer
+  - hired

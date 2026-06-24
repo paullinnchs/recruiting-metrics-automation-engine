@@ -1,0 +1,110 @@
+# thresholds.yaml
+# ─────────────────────────────────────────────
+# Configurable alert thresholds for all 23 recruiting metrics.
+# All thresholds are global defaults. Override per department or role
+# by adding a nested `overrides` block (see examples below).
+#
+# Part of: recruiting-metrics-automation-engine
+# Author:  Paul Linn Solutions (PLS)
+
+# ── TIER 1: ATS-ONLY METRICS ──────────────────
+
+time_to_fill:
+  warning_days: 30
+  critical_days: 45
+  overrides:
+    Engineering:
+      warning_days: 40
+      critical_days: 60
+    Sales:
+      warning_days: 25
+      critical_days: 35
+
+time_to_hire:
+  warning_days: 20
+  critical_days: 30
+
+offer_acceptance_rate:
+  warning_pct: 85
+  critical_pct: 75
+
+fill_rate:
+  target_pct: 80
+  warning_pct: 70
+  critical_pct: 60
+  window_days: 30
+
+vacancy_rate:
+  warning_pct: 10
+  critical_pct: 15
+
+application_completion_rate:
+  warning_pct: 65
+  critical_pct: 50
+
+applicants_per_opening:
+  min_applications_warning: 10    # alert if < this after warning_after_days
+  warning_after_days: 7
+
+sourcing_channel_effectiveness:
+  min_conversion_pct: 2.0         # flag channels below this rate
+
+sourcing_channel_cost:
+  max_cost_per_hire: 8000         # flag channels above this CPH
+
+selection_ratio:
+  # informational only — no threshold alerts by default
+  track: true
+
+# ── TIER 2: CROSS-SYSTEM METRICS ─────────────
+
+first_year_attrition:
+  warning_pct: 15
+  critical_pct: 25
+
+quality_of_hire:
+  min_success_ratio_pct: 75       # flag if < 75% of hires meet expectations
+  min_avg_rating: 3.0             # on a 5-point scale
+
+cost_per_hire:
+  warning_usd: 6000
+  critical_usd: 10000
+
+candidate_experience:
+  cnps_warning: 20                # flag if cNPS drops below this
+  cnps_critical: 0
+
+recruitment_funnel_effectiveness:
+  min_stage_conversion_pct: 15   # flag stages with < 15% conversion from prior
+
+adverse_impact:
+  four_fifths_threshold: 0.80    # legal standard — do not lower
+  auto_compliance_alert: true    # always route flags to HR/Legal
+
+recruiter_performance:
+  min_fill_rate_pct: 70          # flag recruiters below this
+  max_avg_tth_days: 30
+
+# ── TIER 3: PARTIAL AUTOMATION ────────────────
+
+hiring_manager_satisfaction:
+  min_score: 3.5                 # on a 5-point scale
+
+candidate_job_satisfaction:
+  min_score: 3.5
+  pulse_days: [30, 60, 90]       # survey trigger days post-hire
+
+time_to_productivity:
+  # OPL definition is org-specific — configure the milestone name
+  productivity_milestone: "fully_ramped"
+  warning_days: 90
+  critical_days: 120
+
+# ── SCHEDULING ────────────────────────────────
+
+schedule:
+  tier1_agent: "0 6 * * *"        # daily at 6am UTC
+  tier2_agent: "0 7 * * 1"        # mondays at 7am UTC
+  tier3_surveys: "event_driven"   # triggered by ATS webhooks
+  briefing_agent: "0 8 * * 5"     # fridays at 8am UTC (weekly TA briefing)
+  exec_briefing: "0 8 1 * *"      # 1st of month at 8am UTC

@@ -1,0 +1,10 @@
+openai
+anthropic
+python-dotenv
+requests
+pyyaml
+pandas
+slack_sdk
+schedule
+fastapi
+uvicorn

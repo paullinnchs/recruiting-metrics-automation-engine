@@ -1,0 +1,106 @@
+{
+  "generated_at": "2026-06-24T22:35:00.562225",
+  "tier": 1,
+  "metrics": {
+    "time_to_fill": {
+      "metric": "time_to_fill",
+      "average_days": 0,
+      "by_req": []
+    },
+    "time_to_hire": {
+      "metric": "time_to_hire",
+      "average_days": 0,
+      "bottleneck_stage": null,
+      "by_candidate": []
+    },
+    "source_of_hire": {
+      "metric": "source_of_hire",
+      "total_hires": 0,
+      "breakdown": []
+    },
+    "sourcing_channel_effectiveness": {
+      "metric": "sourcing_channel_effectiveness",
+      "channels": []
+    },
+    "sourcing_channel_cost": {
+      "metric": "sourcing_channel_cost",
+      "by_platform": [
+        {
+          "platform": "linkedin",
+          "spend": 4200,
+          "hires": 0,
+          "cost_per_hire": null
+        },
+        {
+          "platform": "indeed",
+          "spend": 1800,
+          "hires": 0,
+          "cost_per_hire": null
+        },
+        {
+          "platform": "glassdoor",
+          "spend": 600,
+          "hires": 0,
+          "cost_per_hire": null
+        },
+        {
+          "platform": "employee_referral",
+          "spend": 0,
+          "hires": 0,
+          "cost_per_hire": null
+        }
+      ]
+    },
+    "applicants_per_opening": {
+      "metric": "applicants_per_opening",
+      "average": 0,
+      "by_req": []
+    },
+    "selection_ratio": {
+      "metric": "selection_ratio",
+      "total_applicants": 0,
+      "total_hires": 0,
+      "ratio_pct": 0
+    },
+    "offer_acceptance_rate": {
+      "metric": "offer_acceptance_rate",
+      "offers_extended": 0,
+      "accepted": 0,
+      "rate_pct": 0
+    },
+    "pct_open_positions": {
+      "metric": "pct_open_positions",
+      "open_reqs": 0,
+      "total_headcount": 500,
+      "vacancy_rate_pct": 0.0
+    },
+    "application_completion_rate": {
+      "metric": "application_completion_rate",
+      "started": 0,
+      "completed": 0,
+      "rate_pct": 0
+    },
+    "fill_rate": {
+      "metric": "fill_rate",
+      "closed_reqs": 0,
+      "filled": 0,
+      "fill_rate_pct": 0
+    }
+  },
+  "alerts": [
+    {
+      "metric": "offer_acceptance_rate",
+      "level": "CRITICAL",
+      "message": "OAR 0% \u2014 severe offer conversion issue",
+      "value": 0,
+      "timestamp": "2026-06-24T22:35:00.561567"
+    },
+    {
+      "metric": "fill_rate",
+      "level": "WARNING",
+      "message": "Fill rate 0% below target",
+      "value": 0,
+      "timestamp": "2026-06-24T22:35:00.561620"
+    }
+  ]
+}
