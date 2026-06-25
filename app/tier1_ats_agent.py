@@ -12,13 +12,18 @@ Author:  Paul Linn Solutions (PLS)
 
 import json
 import logging
+import os
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+import requests
 import yaml
+from dotenv import load_dotenv
 
 from ats_connector import ATSConnector
+
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)
@@ -285,6 +290,137 @@ def write_alerts(alerts: list[dict]) -> None:
 
 
 # ──────────────────────────────────────────────
+# SLACK NOTIFICATIONS
+# ──────────────────────────────────────────────
+
+# Translates each technical metric into business-readable language for
+# non-technical stakeholders (recruiting managers, VP of Talent Acquisition,
+# operational leaders). Each entry provides a plain-English metric name, the
+# unit used to display the value, the business impact, and a recommended action.
+METRIC_BUSINESS_CONTEXT: dict[str, dict[str, str]] = {
+    "time_to_fill": {
+        "label": "Time to Fill",
+        "unit": "days",
+        "impact": ("Roles are staying open longer than target, which can delay "
+                   "hiring goals, increase recruiter workload, and slow revenue "
+                   "or service delivery in affected teams."),
+        "action": "Review aging requisitions and rebalance recruiter capacity.",
+    },
+    "time_to_hire": {
+        "label": "Time to Hire",
+        "unit": "days",
+        "impact": ("Candidates are spending too long in the hiring process, "
+                   "which increases the risk of drop-off and losing top talent "
+                   "to faster competitors."),
+        "action": "Identify the slowest interview stages and remove scheduling bottlenecks.",
+    },
+    "offer_acceptance_rate": {
+        "label": "Offer Acceptance Rate",
+        "unit": "%",
+        "impact": ("Candidates are not accepting offers, which can delay hiring "
+                   "goals and indicate compensation or candidate experience issues."),
+        "action": "Review recent declined offers and identify patterns.",
+    },
+    "fill_rate": {
+        "label": "Fill Rate",
+        "unit": "%",
+        "impact": ("Open positions are not being filled fast enough, which can "
+                   "impact revenue targets, service delivery, and recruiter productivity."),
+        "action": "Review aging requisitions and recruiter workload.",
+    },
+    "pct_open_positions": {
+        "label": "Open Position (Vacancy) Rate",
+        "unit": "%",
+        "impact": ("A high share of roles are unfilled, putting organizational "
+                   "capacity and delivery commitments at risk."),
+        "action": "Prioritize critical and revenue-generating roles for immediate sourcing focus.",
+    },
+}
+
+
+def _format_metric_value(value: Any, unit: str) -> str:
+    """Render a metric value with its business unit (e.g. '0%', '38 days')."""
+    if value is None:
+        return "N/A"
+    if unit == "%":
+        return f"{value}%"
+    if unit:
+        return f"{value} {unit}"
+    return str(value)
+
+
+def _build_business_message(alerts: list[dict], total_metrics: int | None) -> str:
+    """Translate threshold alerts into a leadership-readable Slack message."""
+    # Surface the most severe alerts first.
+    severity_rank = {"CRITICAL": 0, "WARNING": 1}
+    ranked = sorted(alerts, key=lambda a: severity_rank.get(a.get("level", ""), 99))
+
+    count = len(ranked)
+    issue_word = "issue" if count == 1 else "issues"
+    header = "*Recruiting Metrics Alert — Weekly Snapshot*"
+    intro = f"*{count} {issue_word} need immediate attention.*"
+
+    blocks = [header, "", intro, ""]
+    for i, a in enumerate(ranked, start=1):
+        ctx = METRIC_BUSINESS_CONTEXT.get(a.get("metric", ""), {})
+        label = ctx.get("label") or a.get("metric", "Metric").replace("_", " ").title()
+        value = _format_metric_value(a.get("value"), ctx.get("unit", ""))
+        impact = ctx.get("impact") or a.get("message", "This metric crossed an alert threshold.")
+        action = ctx.get("action") or "Review the underlying data and investigate root cause."
+
+        blocks.append(f"*{i}. {label} = {value}*")
+        blocks.append("*Business Impact:*")
+        blocks.append(impact)
+        blocks.append("*Recommended Action:*")
+        blocks.append(action)
+        blocks.append("")
+
+    analyzed = total_metrics if total_metrics is not None else "Multiple"
+    metric_word = "metric" if count == 1 else "metrics"
+    blocks.append("*Summary:*")
+    blocks.append(
+        f"{analyzed} recruiting metrics were analyzed. {count} {metric_word} crossed "
+        "alert thresholds requiring leadership review."
+    )
+
+    return "\n".join(blocks)
+
+
+def notify_slack(alerts: list[dict], total_metrics: int | None = None) -> bool:
+    """
+    Post a business-readable summary of generated alerts to Slack.
+
+    Translates technical metric alerts into leadership-friendly language
+    (metric name, business impact, recommended action) so a non-technical
+    stakeholder can immediately understand what they are looking at and why
+    it matters.
+
+    Reads SLACK_WEBHOOK_URL from the environment (.env). Fails safe: if the
+    webhook is not configured or the request fails, logs a warning and returns
+    False so the caller can continue uninterrupted. Never logs the webhook URL.
+    """
+    if not alerts:
+        return False
+
+    webhook_url = os.getenv("SLACK_WEBHOOK_URL")
+    if not webhook_url:
+        log.info("Slack webhook not configured (SLACK_WEBHOOK_URL unset) — skipping notification")
+        return False
+
+    text = _build_business_message(alerts, total_metrics)
+
+    try:
+        resp = requests.post(webhook_url, json={"text": text}, timeout=10)
+        resp.raise_for_status()
+        log.info(f"Slack notification sent ({len(alerts)} alert(s) summarized)")
+        return True
+    except requests.RequestException as e:
+        # Avoid leaking the webhook URL, which may appear in the exception.
+        log.warning(f"Slack notification failed ({type(e).__name__}) — continuing")
+        return False
+
+
+# ──────────────────────────────────────────────
 # MAIN
 # ──────────────────────────────────────────────
 
@@ -330,6 +466,7 @@ def run():
     alerts = check_thresholds(results, thresholds)
     write_report(results, alerts)
     write_alerts(alerts)
+    notify_slack(alerts, total_metrics=len(results))
 
     log.info(f"Tier 1 complete — {len(results)} metrics computed, {len(alerts)} alerts generated")
     return results, alerts

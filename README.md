@@ -22,6 +22,40 @@ Most TA teams track recruiting metrics manually: exporting ATS reports, pasting 
 
 ---
 
+## Business Value and Sample Outputs
+
+This system continuously monitors critical recruiting performance metrics and automatically translates operational KPI movement into business-readable alerts for leadership teams.
+
+Instead of manually pulling ATS reports and interpreting metrics, recruiting teams receive automated intelligence showing where operational performance is deteriorating — and what to do about it.
+
+**Example signals monitored:**
+
+- Time to Fill increasing beyond threshold
+- Offer Acceptance Rate dropping unexpectedly
+- Fill Rate declining below hiring targets
+- Candidate Experience scores deteriorating
+- Recruiter workload imbalance reducing productivity
+
+**Example business output** (delivered automatically to Slack):
+
+> **Recruiting Metrics Alert — Weekly Snapshot**
+>
+> **2 issues need immediate attention.**
+>
+> **1. Offer Acceptance Rate = 0%**
+> **Business Impact:** Candidates are not accepting offers, which can delay hiring goals and indicate compensation or candidate experience issues.
+> **Recommended Action:** Review recent declined offers and identify patterns.
+>
+> **2. Fill Rate = 0%**
+> **Business Impact:** Open positions are not being filled fast enough, which can impact revenue targets, service delivery, and recruiter productivity.
+> **Recommended Action:** Review aging requisitions and recruiter workload.
+>
+> **Summary:** 11 recruiting metrics were analyzed. 2 metrics crossed alert thresholds requiring leadership review.
+
+Each alert answers the three questions a busy leader actually asks: **What is happening? Why does it matter to the business? What should we do next?** No spreadsheets, no metric definitions to memorize, and no technical interpretation required.
+
+---
+
 ## Architecture
 
 ```

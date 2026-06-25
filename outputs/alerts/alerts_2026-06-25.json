@@ -1,0 +1,16 @@
+[
+  {
+    "metric": "offer_acceptance_rate",
+    "level": "CRITICAL",
+    "message": "OAR 0% \u2014 severe offer conversion issue",
+    "value": 0,
+    "timestamp": "2026-06-25T18:07:32.106227"
+  },
+  {
+    "metric": "fill_rate",
+    "level": "WARNING",
+    "message": "Fill rate 0% below target",
+    "value": 0,
+    "timestamp": "2026-06-25T18:07:32.106253"
+  }
+]
