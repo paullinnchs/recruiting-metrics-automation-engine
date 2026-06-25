@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-06-25T13:37:34.040969",
+  "snapshot": {
+    "time_to_fill_avg_days": null,
+    "time_to_hire_avg_days": null,
+    "offer_acceptance_rate_pct": null,
+    "fill_rate_pct": null,
+    "vacancy_rate_pct": null,
+    "app_completion_rate_pct": null,
+    "top_source_of_hire": null,
+    "quality_of_hire_success_ratio": null,
+    "cost_per_hire": null,
+    "first_year_attrition_pct": null,
+    "cnps": null,
+    "funnel_bottleneck": null,
+    "adverse_impact_flags": []
+  },
+  "alerts": [],
+  "open_text_themes": "_LLM disabled or no open-text data._"
+}

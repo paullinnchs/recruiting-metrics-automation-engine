@@ -242,28 +242,26 @@ def run(use_llm: bool = True):
         themes = "_LLM disabled or no open-text data._"
         briefing_body = build_plain_report(snapshot, alerts)
 
-    # Write outputs
+      # Write outputs
     out_dir = OUTPUT_PATH / "briefings"
     out_dir.mkdir(parents=True, exist_ok=True)
     today = date.today().isoformat()
 
     md_path = out_dir / f"ta_briefing_{today}.md"
-    with open(md_path, "w") as f:
+    with open(md_path, "w", encoding="utf-8") as f:
         f.write(briefing_body)
     log.info(f"Briefing written: {md_path}")
 
     json_path = out_dir / f"ta_briefing_{today}.json"
-    with open(json_path, "w") as f:
+    with open(json_path, "w", encoding="utf-8") as f:
         json.dump({
-            "generated_at": datetime.utcnow().isoformat(),
+            "generated_at": datetime.now().isoformat(),
             "snapshot": snapshot,
             "alerts": alerts,
             "open_text_themes": themes,
         }, f, indent=2, default=str)
     log.info(f"Structured briefing JSON written: {json_path}")
 
-    return briefing_body, snapshot
-
-
+    return briefing_body, snapshot  
 if __name__ == "__main__":
     run()
