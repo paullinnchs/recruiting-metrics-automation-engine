@@ -85,3 +85,9 @@ funnel_stages:                       # used for Metric 17: Funnel effectiveness
   - final_round
   - offer
   - hired
+
+billing:
+     platform: file_csv
+     billing_path: "sample_data/sample_billing_data.csv"
+     rate_card_path: "sample_data/sample_rate_cards.csv"
+     contracts_path: "sample_data/sample_contracts.csv"

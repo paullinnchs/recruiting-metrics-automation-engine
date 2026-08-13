@@ -8,3 +8,4 @@ slack_sdk
 schedule
 fastapi
 uvicorn
+httpx

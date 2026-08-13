@@ -1,0 +1,20 @@
+markup_leak:
+  min_variance_pct: 2.0
+  min_dollar_threshold: 250
+stale_rate_card:
+  grace_period_days: 15
+  assumed_missed_escalation_pct: 3.0
+off_contract_spend:
+  flag_missing_contract_id: true
+  flag_unapproved_supplier: true
+classification_risk:
+  min_consecutive_periods_staff_aug_1099: 26
+  flag_sow_hourly_without_deliverables: true
+  exposure_multiplier_of_annualized_spend: 0.15
+hours_variance:
+  min_hours_gap_flag: 4.0
+severity_dollar_bands:
+  info_max: 500
+  warning_max: 5000
+escalation:
+  revenue_protection_engine_webhook: "${REVENUE_PROTECTION_WEBHOOK_URL}"

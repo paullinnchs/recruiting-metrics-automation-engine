@@ -1,0 +1,4 @@
+contract_id,supplier_vendor,engagement_type,approved_supplier,billing_cadence,deliverables_defined
+C-100,Talmix Partners,staff_aug,true,hourly,false
+C-101,Talmix Partners,staff_aug,true,hourly,false
+C-200,Atrium Consulting,sow,true,hourly,false

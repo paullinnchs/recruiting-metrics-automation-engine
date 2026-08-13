@@ -1,0 +1,9 @@
+id,worker_id,worker_name,worker_type,engagement_type,supplier_vendor,department,role_title,contract_id,period_start,period_end,hours_submitted,hours_approved,hours_invoiced,pay_rate,bill_rate,invoice_amount,is_approved_supplier
+BL-0001,W-1001,Jordan Reyes,w2,staff_aug,Talmix Partners,Engineering,Senior Developer,C-100,2026-06-01,2026-06-07,40,40,40,55,95,3800,true
+BL-0002,W-1002,Casey Nguyen,1099,staff_aug,BrightStaff LLC,Engineering,Senior Developer,C-100,2026-06-01,2026-06-07,40,40,40,60,72,2880,true
+BL-0003,W-1003,Alex Morgan,corp_to_corp,sow,Atrium Consulting,Delivery,Implementation Lead,C-200,2026-06-01,2026-06-07,40,40,40,70,140,5600,true
+BL-0004,W-1004,Priya Shah,1099,staff_aug,BrightStaff LLC,Sales,Account Manager,,2026-06-01,2026-06-07,38,38,38,50,88,3344,false
+BL-0005,W-1002,Casey Nguyen,1099,staff_aug,BrightStaff LLC,Engineering,Senior Developer,C-100,2026-06-08,2026-06-14,40,40,40,60,72,2880,true
+BL-0006,W-1005,Sam Whitfield,w2,staff_aug,Talmix Partners,Customer Success,CSM,C-101,2026-05-01,2026-05-07,40,36,40,52,90,3600,true
+BL-0007,W-1001,Jordan Reyes,w2,staff_aug,Talmix Partners,Engineering,Senior Developer,C-100,2026-06-08,2026-06-14,40,40,40,55,95,3800,true
+BL-0008,W-1003,Alex Morgan,corp_to_corp,sow,Atrium Consulting,Delivery,Implementation Lead,C-200,2026-06-08,2026-06-14,40,40,40,70,140,5600,true
