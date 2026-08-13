@@ -1,0 +1,120 @@
+{
+  "generated_at": "2026-08-13T13:29:10.672413",
+  "total_exposure": 48360.0,
+  "finding_count": 7,
+  "by_category": {
+    "classification_risk": {
+      "count": 1,
+      "dollar_impact": 43680.0
+    },
+    "off_contract_spend": {
+      "count": 1,
+      "dollar_impact": 3344.0
+    },
+    "hours_variance": {
+      "count": 1,
+      "dollar_impact": 360.0
+    },
+    "missed_markup": {
+      "count": 2,
+      "dollar_impact": 640.0
+    },
+    "stale_rate_card": {
+      "count": 2,
+      "dollar_impact": 336.0
+    }
+  },
+  "findings": [
+    {
+      "category": "classification_risk",
+      "subtype": "sow_in_name_only",
+      "contract_id": "C-200",
+      "supplier_vendor": "Atrium Consulting",
+      "dollar_impact": 43680.0,
+      "description": "Contract C-200 with Atrium Consulting is classified as SOW but bills hourly with no defined deliverables \u2014 functions as staff augmentation. Reclassification exposure estimated on $291,200 annualized spend.",
+      "recommendation": "Rewrite the SOW with milestone-based deliverables, or reclassify to staff aug with proper markup/compliance treatment.",
+      "severity": "CRITICAL"
+    },
+    {
+      "category": "off_contract_spend",
+      "worker_id": "W-1004",
+      "worker_name": "Priya Shah",
+      "supplier_vendor": "BrightStaff LLC",
+      "department": "Sales",
+      "period": "2026-06-01 to 2026-06-07",
+      "dollar_impact": 3344.0,
+      "description": "$3,344.00 billed to BrightStaff LLC with no approved-supplier match (Sales).",
+      "recommendation": "Route through the approved MSP/VMS channel or formalize a contract; verify the buying manager's authority.",
+      "severity": "WARNING"
+    },
+    {
+      "category": "hours_variance",
+      "subtype": "overbilled",
+      "worker_id": "W-1005",
+      "worker_name": "Sam Whitfield",
+      "period": "2026-05-01 to 2026-05-07",
+      "hours_approved": 36.0,
+      "hours_invoiced": 40.0,
+      "dollar_impact": 360.0,
+      "description": "4.0 hours overbilled for Sam Whitfield (36.0 approved vs. 40.0 invoiced).",
+      "recommendation": "Issue a credit memo before the client catches the discrepancy themselves.",
+      "severity": "INFO"
+    },
+    {
+      "category": "missed_markup",
+      "worker_id": "W-1002",
+      "worker_name": "Casey Nguyen",
+      "supplier_vendor": "BrightStaff LLC",
+      "role_title": "Senior Developer",
+      "period": "2026-06-01 to 2026-06-07",
+      "contracted_bill_rate": 80.0,
+      "actual_bill_rate": 72.0,
+      "variance_pct": 10.0,
+      "dollar_impact": 320.0,
+      "description": "Casey Nguyen billed at $72.0/hr vs. contracted $80.0/hr (10.0% under) for 40.0 hours.",
+      "recommendation": "Correct the bill rate going forward and evaluate whether the variance is recoverable retroactively.",
+      "severity": "INFO"
+    },
+    {
+      "category": "missed_markup",
+      "worker_id": "W-1002",
+      "worker_name": "Casey Nguyen",
+      "supplier_vendor": "BrightStaff LLC",
+      "role_title": "Senior Developer",
+      "period": "2026-06-08 to 2026-06-14",
+      "contracted_bill_rate": 80.0,
+      "actual_bill_rate": 72.0,
+      "variance_pct": 10.0,
+      "dollar_impact": 320.0,
+      "description": "Casey Nguyen billed at $72.0/hr vs. contracted $80.0/hr (10.0% under) for 40.0 hours.",
+      "recommendation": "Correct the bill rate going forward and evaluate whether the variance is recoverable retroactively.",
+      "severity": "INFO"
+    },
+    {
+      "category": "stale_rate_card",
+      "worker_id": "W-1003",
+      "worker_name": "Alex Morgan",
+      "supplier_vendor": "Atrium Consulting",
+      "role_title": "Implementation Lead",
+      "period": "2026-06-01 to 2026-06-07",
+      "rate_card_expired": "2026-03-31",
+      "dollar_impact": 168.0,
+      "description": "Billing continued 68 days past rate card expiration (2026-03-31) for Atrium Consulting / Implementation Lead with no renegotiation on file.",
+      "recommendation": "Renegotiate and re-execute the rate card; back-bill the escalation if the master agreement allows it.",
+      "severity": "INFO"
+    },
+    {
+      "category": "stale_rate_card",
+      "worker_id": "W-1003",
+      "worker_name": "Alex Morgan",
+      "supplier_vendor": "Atrium Consulting",
+      "role_title": "Implementation Lead",
+      "period": "2026-06-08 to 2026-06-14",
+      "rate_card_expired": "2026-03-31",
+      "dollar_impact": 168.0,
+      "description": "Billing continued 75 days past rate card expiration (2026-03-31) for Atrium Consulting / Implementation Lead with no renegotiation on file.",
+      "recommendation": "Renegotiate and re-execute the rate card; back-bill the escalation if the master agreement allows it.",
+      "severity": "INFO"
+    }
+  ]
+}

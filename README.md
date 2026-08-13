@@ -279,6 +279,20 @@ See [`docs/setup_guide.md`](docs/setup_guide.md) for full configuration walkthro
 
 Quick start:
 
+## Workflow Sprint Module — One-Time Setup
+
+In addition to the Python requirements (`pip install -r requirements.txt`),
+the Workflow Sprint branded report generator needs Node.js and the `docx`
+npm package:
+
+```bash
+npm install docx
+```
+
+Run this once, from the repo root. Without it, `leak_report_generator.py`
+still runs and still produces the Markdown working copy — it just logs a
+warning and skips the branded `.docx` step.
+
 ```bash
 git clone https://github.com/paullinnchs/recruiting-metrics-automation-engine
 cd recruiting-metrics-automation-engine
