@@ -12,6 +12,8 @@ Author:  Paul Linn Solutions (PLS)
 
 import json
 import logging
+import os
+import shutil
 import subprocess
 from datetime import date, datetime
 from pathlib import Path
@@ -129,6 +131,59 @@ def build_branded_docx(report_json_path: Path, client_name: str, out_path: Path)
         return False
 
 
+def _find_libreoffice() -> str | None:
+    """
+    Locates the LibreOffice headless binary across platforms. Checks an
+    explicit override first, then common install paths on Windows/macOS,
+    then falls back to whatever 'soffice' resolves to on PATH (Linux/most
+    package managers).
+    """
+    override = os.environ.get("LIBREOFFICE_PATH")
+    if override and Path(override).exists():
+        return override
+
+    candidates = [
+        r"C:\Program Files\LibreOffice\program\soffice.exe",
+        r"C:\Program Files (x86)\LibreOffice\program\soffice.exe",
+        "/Applications/LibreOffice.app/Contents/MacOS/soffice",
+    ]
+    for c in candidates:
+        if Path(c).exists():
+            return c
+
+    found = shutil.which("soffice") or shutil.which("soffice.exe")
+    return found
+
+
+def convert_docx_to_pdf(docx_path: Path, out_dir: Path) -> Path | None:
+    """
+    Converts a .docx to .pdf via headless LibreOffice — the same approach
+    used to QA these templates. Returns the resulting PDF path, or None
+    if LibreOffice isn't available (caller should fall back to the .docx).
+    """
+    soffice = _find_libreoffice()
+    if not soffice:
+        log.warning(
+            "LibreOffice not found — PDF not generated. Install LibreOffice and "
+            "ensure 'soffice' is on PATH, or set LIBREOFFICE_PATH. Falling back to .docx."
+        )
+        return None
+    try:
+        result = subprocess.run(
+            [soffice, "--headless", "--convert-to", "pdf", "--outdir", str(out_dir), str(docx_path)],
+            capture_output=True, text=True, timeout=90,
+        )
+        pdf_path = out_dir / (docx_path.stem + ".pdf")
+        if result.returncode != 0 or not pdf_path.exists():
+            log.error(f"PDF conversion failed: {result.stderr.strip()}")
+            return None
+        log.info(f"PDF written: {pdf_path}")
+        return pdf_path
+    except Exception as e:
+        log.error(f"PDF conversion error: {e}")
+        return None
+
+
 # ──────────────────────────────────────────────
 # LLM-WRITTEN EXECUTIVE NARRATIVE (OPTIONAL, feeds the .docx too if desired)
 # ──────────────────────────────────────────────
@@ -178,15 +233,20 @@ def run(client_name: str = "Client", use_llm_narrative: bool = False):
         f.write(body)
     log.info(f"Working copy written: {md_path}")
 
-    # 2. Branded .docx — the actual client deliverable
+    # 2. Branded .docx — intermediate, editable source
     report_json_path = OUTPUT_PATH / "reports" / f"leak_report_{today}.json"
     docx_path = out_dir / f"Workflow_Sprint_Report_{slug}_{today}.docx"
     ok = build_branded_docx(report_json_path, client_name, docx_path)
     if not ok:
         log.warning("Falling back to Markdown only — branded .docx was not generated.")
-        docx_path = None
+        return body, None, None
 
-    return body, docx_path
+    # 3. PDF — the actual client deliverable
+    pdf_path = convert_docx_to_pdf(docx_path, out_dir)
+    if not pdf_path:
+        log.warning("PDF conversion unavailable — the .docx above is still a valid deliverable.")
+
+    return body, docx_path, pdf_path
 
 
 if __name__ == "__main__":

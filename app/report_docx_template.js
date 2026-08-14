@@ -26,7 +26,8 @@ if (!reportPath || !clientName || !outPath) {
 }
 
 const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
-const LOGO_PATH = path.join(__dirname, "..", "assets", "pls_logo_transparent.png");
+const LOGO_PATH = path.join(__dirname, "..", "assets", "pls_logo_dark_trimmed.png");
+const LOGO_ASPECT = 770 / 1100; // trimmed dark-variant image proportions
 
 const NAVY = "0B2545";
 const CORAL = "E8604C";
@@ -43,17 +44,13 @@ const CATEGORY_LABELS = {
 const SEVERITY_ICON = { CRITICAL: "\uD83D\uDD34", WARNING: "\uD83D\uDFE1", INFO: "\u26AA" };
 
 function logoHeader() {
-  const children = [
+  const width = 150;
+  return [
     new Paragraph({
-      spacing: { after: 20 },
-      children: [new ImageRun({ data: fs.readFileSync(LOGO_PATH), transformation: { width: 90, height: 68 }, type: "png" })],
+      spacing: { after: 220 },
+      children: [new ImageRun({ data: fs.readFileSync(LOGO_PATH), transformation: { width, height: Math.round(width * LOGO_ASPECT) }, type: "png" })],
     }),
   ];
-  children.push(new Paragraph({
-    spacing: { after: 200 },
-    children: [new TextRun({ text: "SAAS  \u2022  AI  \u2022  HR TECH", size: 15, color: GRAY, bold: true })],
-  }));
-  return children;
 }
 function docTitle(text) {
   return new Paragraph({
@@ -145,7 +142,8 @@ if (!findingBlocks.length) {
 }
 
 const totalExposure = (report.total_exposure || 0).toLocaleString(undefined, { minimumFractionDigits: 2 });
-const today = new Date().toISOString().slice(0, 10);
+const now = new Date();
+const today = `${String(now.getMonth() + 1).padStart(2, "0")}/${String(now.getDate()).padStart(2, "0")}/${now.getFullYear()}`;
 
 const doc = new Document({
   sections: [{
