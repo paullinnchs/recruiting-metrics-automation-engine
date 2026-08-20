@@ -1,318 +1,283 @@
-# recruiting-metrics-automation-engine
+# Recruiting Metrics & Workforce Revenue Intelligence Engine
 
-**Part of the [AI Operator Lab](https://github.com/paullinnchs) portfolio by Paul Linn Solutions (PLS)**
+**A Paul Linn Solutions (PLS) workflow automation prototype for recruiting operations and contingent workforce revenue intelligence.**
 
----
+This repository contains two related operational modules:
 
-An agentic workflow system that automates the collection, calculation, alerting, and reporting of the 23 core recruiting metrics. Designed for talent acquisition teams and HR operators who want to move from manual spreadsheet tracking to a fully automated, always-on intelligence layer across their recruiting function.
+1. **Workforce Revenue Leak Audit** — analyzes workforce billing, timesheets, rate cards, and contracts/SOWs to surface potential revenue leakage and prioritize findings by estimated financial exposure.
+2. **Recruiting Metrics Intelligence** — calculates recruiting KPIs, evaluates configurable thresholds, and turns operational signals into business-readable alerts and reporting.
 
-This engine connects to your ATS, HRIS, survey tools, and ad platforms — computes metrics on a schedule — and delivers alerts, dashboards, and briefings without a human touching a spreadsheet.
-
----
-
-## What this solves
-
-Most TA teams track recruiting metrics manually: exporting ATS reports, pasting into Excel, building pivot tables. It takes hours, happens infrequently, and produces stale data. This engine replaces that loop with:
-
-- **Always-on data collection** via API connectors to ATS, HRIS, and ad platforms
-- **Automated calculation** of all 23 AIHR-standard recruiting metrics
-- **Proactive alerting** when metrics cross defined thresholds
-- **Auto-generated briefings** delivered on a schedule to TA leaders and HMs
-- **An executive Revenue-at-Risk layer** that connects recruiting lag to business cost
+The goal is straightforward: take operational data that normally lives across spreadsheets and systems, standardize it, run repeatable checks, and produce clear findings that tell an operator **what is happening, why it matters, and what should happen next**.
 
 ---
 
-## Business Value and Sample Outputs
+## Module 1 — Workforce Revenue Leak Audit
 
-This system continuously monitors critical recruiting performance metrics and automatically translates operational KPI movement into business-readable alerts for leadership teams.
+### What it solves
 
-Instead of manually pulling ATS reports and interpreting metrics, recruiting teams receive automated intelligence showing where operational performance is deteriorating — and what to do about it.
+Revenue and margin can quietly leak when billing records, approved hours, rate cards, supplier relationships, and contract terms do not line up. Manually comparing those sources is time-consuming and easy to defer.
 
-**Example signals monitored:**
+The Revenue Leak module provides a repeatable diagnostic workflow using client-provided data.
+
+### Standard inputs
+
+- Billing / invoice history
+- Timesheets for the same period
+- Rate cards
+- Active contracts / SOWs
+- Optional ATS export of open requisitions for additional revenue-risk context
+
+### What the engine checks
+
+The current module evaluates five defined categories:
+
+- **Missed / incorrect markup** — billed rates that fall below applicable contracted rates
+- **Stale rate card billing** — billing associated with expired rate-card terms
+- **Off-contract / maverick spend** — spend without an approved contract or supplier match
+- **Potential worker classification risk requiring review** — engagement patterns that may warrant human legal/compliance review; the engine does not make a legal classification determination
+- **Unbilled / duplicate hours** — approved hours not invoiced or invoiced hours that exceed approved hours
+
+### Workflow
+
+```text
+Client files
+    ↓
+Data normalization and validation
+    ↓
+Configurable revenue-leak rules
+    ↓
+Leak detection engine
+    ↓
+Prioritized findings + estimated financial exposure
+    ↓
+Human validation
+    ↓
+Branded client report + recommended next actions
+```
+
+### Output
+
+The audit produces a prioritized report containing:
+
+- Total estimated financial exposure identified
+- Findings by leak category
+- Estimated dollar impact by finding
+- Severity / prioritization
+- Supporting explanation
+- Recommended operational next action
+
+Findings involving worker classification are explicitly presented as **potential risk requiring review**, not as legal or compliance determinations.
+
+### Core files
+
+- `app/billing_connector.py` — loads and normalizes billing, timesheet, rate-card, and contract data
+- `app/leak_detection_agent.py` — executes the defined revenue-leak checks
+- `app/leak_report_generator.py` — generates the working report and branded output
+- `app/report_docx_template.js` — branded DOCX report generation
+- `config/leak_rules.yaml` — configurable detection thresholds
+- `config/connections.yaml` — source/file connection configuration
+
+---
+
+## Module 2 — Recruiting Metrics Intelligence
+
+### What it solves
+
+Recruiting teams often spend significant time exporting ATS data, calculating KPIs, maintaining spreadsheets, and interpreting whether changes actually require attention.
+
+This module demonstrates a repeatable recruiting-intelligence layer that calculates operational metrics, compares results against configurable thresholds, and produces alerts and executive-ready reporting.
+
+### Example signals
 
 - Time to Fill increasing beyond threshold
-- Offer Acceptance Rate dropping unexpectedly
-- Fill Rate declining below hiring targets
-- Candidate Experience scores deteriorating
-- Recruiter workload imbalance reducing productivity
+- Time to Hire increasing
+- Offer Acceptance Rate declining
+- Fill Rate falling below target
+- Application Completion Rate declining
+- Recruiter workload imbalance
+- Sourcing performance deterioration
 
-**Example business output** (delivered automatically to Slack):
+### Example business output
 
 > **Recruiting Metrics Alert — Weekly Snapshot**
 >
-> **2 issues need immediate attention.**
+> **2 issues need attention.**
 >
-> **1. Offer Acceptance Rate = 0%**
-> **Business Impact:** Candidates are not accepting offers, which can delay hiring goals and indicate compensation or candidate experience issues.
-> **Recommended Action:** Review recent declined offers and identify patterns.
+> **Offer Acceptance Rate below threshold**  
+> **Business Impact:** Hiring goals may be delayed and recent declined offers may indicate compensation, process, or candidate-experience issues.  
+> **Recommended Action:** Review declined offers and identify recurring patterns.
 >
-> **2. Fill Rate = 0%**
-> **Business Impact:** Open positions are not being filled fast enough, which can impact revenue targets, service delivery, and recruiter productivity.
-> **Recommended Action:** Review aging requisitions and recruiter workload.
->
-> **Summary:** 11 recruiting metrics were analyzed. 2 metrics crossed alert thresholds requiring leadership review.
+> **Fill Rate below target**  
+> **Business Impact:** Open positions are not being filled at the expected rate, potentially affecting revenue, service delivery, and recruiter capacity.  
+> **Recommended Action:** Review aging requisitions, funnel conversion, and recruiter workload.
 
-Each alert answers the three questions a busy leader actually asks: **What is happening? Why does it matter to the business? What should we do next?** No spreadsheets, no metric definitions to memorize, and no technical interpretation required.
+Each alert is designed to answer three questions: **What is happening? Why does it matter? What should we do next?**
+
+---
+
+## Recruiting Metric Tiers
+
+### Tier 1 — ATS-driven metrics
+
+Designed for metrics that can be calculated from structured recruiting data with configurable alert thresholds.
+
+| Metric | Example trigger / threshold |
+|---|---|
+| Time to fill | Role open beyond benchmark |
+| Time to hire | Stage duration exceeds threshold |
+| Source of hire | On hire |
+| Sourcing channel effectiveness | Conversion below threshold |
+| Sourcing channel cost | Cost above configured threshold |
+| Applicants per opening | Volume below expected level |
+| Selection ratio | Scheduled calculation |
+| Offer acceptance rate | Rate below threshold |
+| % open positions | Vacancy rate above threshold |
+| Application completion rate | Completion below threshold |
+| Fill rate | Rate below target |
+
+### Tier 2 — Cross-system metrics
+
+Designed for metrics requiring data joins or additional validation.
+
+| Metric | Typical data sources | Human touchpoint |
+|---|---|---|
+| First-year attrition | HRIS + ATS | Validate classification/data completeness |
+| Quality of hire | Performance + ATS | Validate performance inputs |
+| Cost per hire | Finance + ATS | Confirm spend categories |
+| Candidate experience | Survey + ATS | Review qualitative themes |
+| Funnel effectiveness | ATS stages | Interpret drop-off patterns |
+| Adverse impact | ATS outcomes + applicable demographic data | Compliance review required |
+| Recruiter performance | ATS + HRIS + survey | Manager review |
+
+### Tier 3 — Human/LLM-assisted metrics
+
+Used where qualitative information or business definitions require interpretation rather than deterministic calculation alone.
+
+| Metric | Automated component | Human role |
+|---|---|---|
+| Hiring manager satisfaction | Survey collection/scoring | Review narrative themes |
+| Candidate job satisfaction | Pulse collection | Review summarized feedback |
+| Cost to OPL | Cost aggregation | Validate OPL definition |
+| Time to productivity | Milestone tracking | Confirm milestone completion |
+| Recruitment ROI | Cost aggregation | Define/validate productivity value |
 
 ---
 
 ## Architecture
 
-```
+```text
 recruiting-metrics-automation-engine/
 │
-├── app/                                  # Core workflow automation and connector logic
-│   ├── tier1_ats_agent.py               # Fully automatable ATS-only recruiting metrics
-│   ├── tier2_crosssystem_agent.py       # Cross-system metrics requiring ATS + HRIS data joins
-│   ├── briefing_agent.py                # Executive briefing and reporting intelligence layer
-│   ├── ats_connector.py                 # Connector for ATS API integrations (Greenhouse, Lever, iCIMS)
-│   ├── hris_connector.py                # Connector for HRIS platforms (Workday, BambooHR, Rippling)
-│   └── survey_connector.py              # Survey integrations for candidate and hiring manager feedback
+├── app/
+│   ├── ats_connector.py
+│   ├── billing_connector.py
+│   ├── briefing_agent.py
+│   ├── hris_connector.py
+│   ├── leak_detection_agent.py
+│   ├── leak_report_generator.py
+│   ├── report_docx_template.js
+│   ├── survey_connector.py
+│   ├── tier1_ats_agent.py
+│   └── tier2_crosssystem_agent.py
 │
-├── config/                              # Configurable system logic and API connection settings
-│   ├── thresholds.yaml                 # Alert thresholds for KPI monitoring and anomaly detection
-│   └── connections.yaml               # API endpoints and connection configuration (no secrets stored)
+├── config/
+│   ├── connections.yaml
+│   ├── leak_rules.yaml
+│   └── thresholds.yaml
 │
-├── sample_data/                         # Mock ATS and recruiting data for local testing and development
-│   └── sample_ats_data.json           # Sample candidate, requisition, and pipeline data
-│
-├── automation_map.md                    # Workflow automation architecture and metric mapping framework
-├── .env.example                        # Public environment variable template (safe for GitHub)
-├── .gitignore                          # Prevents sensitive files from being committed
-├── requirements.txt                    # Python dependencies required for project execution
-└── README.md                           # Project overview, architecture, setup instructions, and business case
+├── sample_data/
+├── outputs/
+├── screenshots/
+├── automation_map.md
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-## Metric tiers
+## Automation, AI, and Human Review
 
-### Tier 1 — Fully automatable (ATS-only)
-Agent queries ATS API on schedule. No human input required.
+This project intentionally uses different execution methods for different types of work:
 
-| # | Metric | Trigger | Alert condition |
-|---|--------|---------|-----------------|
-| 1 | Time to fill | Daily | Role open > benchmark days |
-| 2 | Time to hire | Daily | Stage gap > 5 days |
-| 3 | Source of hire | On hire | — |
-| 4 | Sourcing channel effectiveness | Weekly | Conversion < 2% |
-| 5 | Sourcing channel cost | Weekly | CPH > $X threshold |
-| 10 | Applicants per opening | Daily | < 10 applicants after 7 days |
-| 11 | Selection ratio | Weekly | — |
-| 14 | Offer acceptance rate | On offer outcome | OAR drops below 80% |
-| 15 | % open positions | Daily | Vacancy rate > 10% |
-| 16 | Application completion rate | Weekly | Completion < 60% |
-| 22 | Fill rate | Weekly | Fill rate < target % |
+- **Deterministic automation** for calculations, comparisons, routing, thresholds, and repeatable data checks
+- **LLM-assisted analysis** where qualitative interpretation or business-readable summarization adds value
+- **Human review** where context, accountability, compliance, or material business judgment is required
 
-### Tier 2 — High automation (ATS + HRIS join)
-Agent joins data across systems. Results auto-published. Human reviews anomalies.
-
-| # | Metric | Systems joined | Human touchpoint |
-|---|--------|---------------|-----------------|
-| 6 | First-year attrition | HRIS + ATS | Review managed vs. unmanaged classification |
-| 7 | Quality of hire | HRIS perf + ATS | Validate perf data completeness |
-| 12 | Cost per hire | Finance/ERP + ATS | Confirm spend categories |
-| 13 | Candidate experience | Survey + ATS | Review open-text themes |
-| 17 | Recruitment funnel effectiveness | ATS stages | Interpret drop-off patterns |
-| 20 | Adverse impact | ATS demographics + outcomes | Compliance review required |
-| 21 | Recruiter performance | ATS + HRIS + survey | Manager scorecard review |
-
-### Tier 3 — Partial automation (survey + LLM layer)
-Agent collects and computes. LLM summarizes qualitative data. Human interprets.
-
-| # | Metric | Automation limit | What human does |
-|---|--------|-----------------|-----------------|
-| 8 | Hiring manager satisfaction | Survey auto-sent + scored | Reviews narrative themes |
-| 9 | Candidate job satisfaction | 30/60/90 day pulse auto-sent | Reviews LLM summary |
-| 18 | Cost to OPL | Cost aggregation automated | Validates OPL date definition |
-| 19 | Time to productivity | Milestone tracking automated | Confirms milestone completion |
-| 23 | Recruitment ROI | Cost inputs automated | Defines productivity value |
+The objective is not to use AI for every step. It is to use the simplest reliable method for each step in the workflow.
 
 ---
 
-## Agent behaviors
+## Configurable Logic
 
-### `tier1_ats_agent.py`
-- Runs on cron (daily or weekly depending on metric)
-- Queries ATS REST API for raw stage/status data
-- Computes all Tier 1 metrics
-- Writes results to `outputs/reports/`
-- Publishes threshold alerts to `outputs/alerts/`
-- Optionally posts to Slack webhook
+`config/thresholds.yaml` controls recruiting KPI alert thresholds.
 
-### `tier2_crosssystem_agent.py`
-- Pulls from ATS + HRIS connectors
-- Joins on employee ID
-- Computes Tier 2 metrics
-- Flags anomalies (statistical outliers, adverse impact triggers)
-- Generates structured JSON output for dashboard consumption
+`config/leak_rules.yaml` controls Revenue Leak detection thresholds and severity logic.
 
-### `tier3_survey_agent.py`
-- Triggers surveys via Typeform/Qualtrics API on ATS events (hire, stage complete)
-- Collects responses
-- Sends open-text responses to LLM for theme extraction
-- Computes NPS / satisfaction scores
-- Produces human-review summary in Markdown
-
-### `briefing_agent.py`
-- Runs weekly (Fridays, configurable)
-- Aggregates outputs from all three tier agents
-- Generates an executive TA briefing:
-  - Pipeline health snapshot
-  - Metric alerts this week
-  - Top funnel bottlenecks
-  - Recruiter performance summary
-  - Sourcing channel ROI
-- Output: Markdown briefing + JSON payload
+These settings allow the engine to be configured for different operating environments without rewriting the core workflow.
 
 ---
 
-## Configurable thresholds (`config/thresholds.yaml`)
+## Data Sources and Connectors
 
-```yaml
-time_to_fill:
-  warning_days: 30
-  critical_days: 45
+The repository includes connector modules and a configurable adapter pattern for structured data sources. The current prototype can operate against configured/sample data and is designed to support production integrations with ATS, HRIS, finance/billing, survey, and other operational systems as required by an implementation.
 
-time_to_hire:
-  warning_days: 20
-  critical_days: 30
-
-offer_acceptance_rate:
-  warning_pct: 85
-  critical_pct: 75
-
-application_completion_rate:
-  warning_pct: 65
-  critical_pct: 50
-
-fill_rate:
-  target_pct: 80
-  warning_pct: 70
-
-vacancy_rate:
-  warning_pct: 10
-  critical_pct: 15
-
-first_year_attrition:
-  warning_pct: 15
-  critical_pct: 25
-```
-
-All thresholds are overridable per department, role type, or seniority band.
-
----
-
-## Connectors
-
-The engine uses a generic adapter pattern. Each connector implements the same interface:
-
-```python
-class BaseConnector:
-    def authenticate(self) -> bool: ...
-    def get_requisitions(self, since: date) -> list[dict]: ...
-    def get_candidates(self, req_id: str) -> list[dict]: ...
-    def get_hires(self, since: date) -> list[dict]: ...
-    def get_stage_history(self, candidate_id: str) -> list[dict]: ...
-```
-
-Supported ATS platforms: Greenhouse, Lever, Workday Recruiting, iCIMS, Jobvite, generic REST (configurable)
-
-Supported HRIS platforms: Rippling, BambooHR, Workday HCM, ADP (via API), generic REST
+Production integrations depend on the target platform's available API, authentication model, permissions, and customer environment.
 
 ---
 
 ## Outputs
 
-### Weekly TA Report (auto-generated Markdown)
-```
-Week of [DATE] — Recruiting Metrics Summary
+Depending on the module and configuration, outputs can include:
 
-PIPELINE HEALTH
-  Open reqs:           47
-  Avg time to fill:    28 days  ⚠ (benchmark: 25)
-  Fill rate (MTD):     73%      ⚠ (target: 80%)
-
-SOURCING
-  Top channel:         LinkedIn (42% of hires)
-  Lowest CPH:          Employee referral ($1,240)
-  Highest CPH:         Agency ($8,900)  ⚠
-
-CANDIDATE FLOW
-  Applications this week:  312
-  Offer acceptance rate:   88%  ✓
-  Avg time to hire:        19 days  ✓
-
-ALERTS THIS WEEK
-  🔴 Engineering reqs: avg 38 days TTF (critical threshold)
-  🟡 Sales funnel: phone screen → offer conversion dropped to 12%
-  🟡 Indeed completion rate: 51% (below 65% warning)
-```
-
-### Executive Briefing (monthly)
-Narrative summary with sourcing ROI, QoH trends, recruiter performance, and cost analysis. Formatted for async consumption by CPO, CHRO, or VP TA.
-
----
-
-## Revenue-at-Risk integration
-
-This engine is designed to connect to the broader [`revenue-protection-engine`](https://github.com/paullinnchs/revenue-protection-engine) — the flagship repo in this portfolio. Open headcount is a revenue risk event. When `% open positions` or `time to fill` breach thresholds in a revenue-generating role (sales, CSM, delivery), the briefing agent escalates to the executive revenue risk briefing.
+- Revenue Leak findings and estimated exposure
+- Branded Workforce Revenue Leak report
+- Recruiting metric reports
+- Threshold alerts
+- Business-readable recommendations
+- Markdown / JSON output for downstream reporting
+- Optional Slack notifications
 
 ---
 
 ## Stack
 
-- **Language**: Python 3.11+
-- **Scheduling**: cron / GitHub Actions / n8n
-- **HTTP**: `httpx` (async-first)
-- **Data processing**: `pandas`, `polars`
-- **LLM layer**: Anthropic Claude API (open-text summarization, briefing generation)
-- **Alerting**: Slack webhook, email (SMTP)
-- **Storage**: SQLite (local) or PostgreSQL (production)
-- **Dashboard**: Outputs JSON consumable by Looker, Tableau, or Retool
+- **Language:** Python 3.11+
+- **Data processing:** pandas / polars
+- **HTTP / integrations:** httpx
+- **LLM layer:** Anthropic Claude API where qualitative analysis is appropriate
+- **Configuration:** YAML
+- **Alerting:** Slack webhook / structured output
+- **Reporting:** Markdown, JSON, DOCX/PDF workflow
+- **Scheduling / orchestration:** can be deployed with cron, GitHub Actions, n8n, or another production orchestration layer
 
 ---
 
-## Setup
-
-See [`docs/setup_guide.md`](docs/setup_guide.md) for full configuration walkthrough.
-
-Quick start:
-
-## Workflow Sprint Module — One-Time Setup
-
-In addition to the Python requirements (`pip install -r requirements.txt`),
-the Workflow Sprint branded report generator needs Node.js and the `docx`
-npm package:
-
-```bash
-npm install docx
-```
-
-Run this once, from the repo root. Without it, `leak_report_generator.py`
-still runs and still produces the Markdown working copy — it just logs a
-warning and skips the branded `.docx` step.
+## Local Setup
 
 ```bash
 git clone https://github.com/paullinnchs/recruiting-metrics-automation-engine
 cd recruiting-metrics-automation-engine
 pip install -r requirements.txt
-cp config/connections.yaml.example config/connections.yaml
-# Add your API credentials to connections.yaml
-python agents/tier1_ats_agent.py --run-now
 ```
 
----
+The branded Revenue Leak DOCX report generator also uses Node.js and the `docx` package:
 
-## Portfolio context
+```bash
+npm install docx
+```
 
-This repo is part of the **AI Operator Lab** — a cross-domain portfolio spanning customer success and talent acquisition, unified by a revenue-protection framework. Related repos:
-
-- [`revenue-protection-engine`](https://github.com/paullinnchs/revenue-protection-engine) — flagship cross-domain engine
-- [`candidate-ranking-agent`](https://github.com/paullinnchs/candidate-ranking-agent) — AI-powered candidate scoring
-- [`offer-to-start-agent`](https://github.com/paullinnchs/offer-to-start-agent) — falloff risk monitoring
-- [`renewal-risk-engine`](https://github.com/paullinnchs/renewal-risk-engine) — CS counterpart to this repo
+Configuration is handled through the files under `config/`. Sample data is included for local testing; customer data should never be committed to the public repository.
 
 ---
 
-*Built by Paul Linn Solutions — operational workflow automation focused on recruiting, workforce technology, and revenue-critical business systems.
+## Portfolio Context
+
+This repository demonstrates how Paul Linn Solutions approaches operational systems:
+
+**defined business problem → structured inputs → repeatable analysis → prioritized output → human action where appropriate**
+
+Related PLS work includes candidate screening/shortlisting and customer health intelligence workflows.
+
+---
+
+*Built by Paul Linn Solutions — practical workflow automation and operational intelligence for recruiting, workforce technology, and customer operations.*
