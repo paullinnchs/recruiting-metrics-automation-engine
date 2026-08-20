@@ -15,3 +15,9 @@ venv/
 .idea/
 
 node_modules/
+
+# Generated Revenue Leak Audit outputs
+outputs/reports/
+
+# Client/internal operating documents
+Workforce_Revenue_Leak_Audit_Operating_Manual.docx
