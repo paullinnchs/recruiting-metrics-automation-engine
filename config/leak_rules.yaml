@@ -8,6 +8,8 @@ off_contract_spend:
   flag_missing_contract_id: true
   flag_unapproved_supplier: true
 classification_risk:
+ # Flags patterns for human/legal/compliance review.
+ # The engine does not make a legal worker-classification determination.
   min_consecutive_periods_staff_aug_1099: 26
   flag_sow_hourly_without_deliverables: true
   exposure_multiplier_of_annualized_spend: 0.15
