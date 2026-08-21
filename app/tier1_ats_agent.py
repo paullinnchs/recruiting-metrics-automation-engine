@@ -228,7 +228,7 @@ def check_thresholds(results: dict, thresholds: dict) -> list[dict]:
 
     def alert(metric, level, message, value):
         alerts.append({"metric": metric, "level": level, "message": message, "value": value,
-                        "timestamp": datetime.utcnow().isoformat()})
+                        "timestamp": datetime.now().isoformat()})
 
     ttf = results.get("time_to_fill", {})
     if ttf:
@@ -267,7 +267,7 @@ def check_thresholds(results: dict, thresholds: dict) -> list[dict]:
 
 def write_report(results: dict, alerts: list[dict]) -> Path:
     today = date.today().isoformat()
-    report = {"generated_at": datetime.utcnow().isoformat(), "tier": 1, "metrics": results, "alerts": alerts}
+    report = {"generated_at": datetime.now().isoformat(), "tier": 1, "metrics": results, "alerts": alerts}
     out_dir = OUTPUT_PATH / "reports"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"tier1_report_{today}.json"

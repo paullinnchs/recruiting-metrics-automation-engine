@@ -1,0 +1,72 @@
+[
+  {
+    "id": "PERF-6001",
+    "employee_id": "EMP-101",
+    "review_period": "90_day",
+    "review_date": "2026-08-20",
+    "first_year_rating": 4.2,
+    "rating_label": "meets",
+    "reviewer_id": "HM-1",
+    "department": "Engineering"
+  },
+  {
+    "id": "PERF-6002",
+    "employee_id": "EMP-102",
+    "review_period": "90_day",
+    "review_date": "2026-08-20",
+    "first_year_rating": 2.4,
+    "rating_label": "below",
+    "reviewer_id": "HM-1",
+    "department": "Engineering"
+  },
+  {
+    "id": "PERF-6003",
+    "employee_id": "EMP-103",
+    "review_period": "90_day",
+    "review_date": "2026-08-20",
+    "first_year_rating": 4.6,
+    "rating_label": "exceeds",
+    "reviewer_id": "HM-1",
+    "department": "Engineering"
+  },
+  {
+    "id": "PERF-6004",
+    "employee_id": "EMP-104",
+    "review_period": "90_day",
+    "review_date": "2026-08-20",
+    "first_year_rating": 3.8,
+    "rating_label": "meets",
+    "reviewer_id": "HM-1",
+    "department": "Engineering"
+  },
+  {
+    "id": "PERF-6005",
+    "employee_id": "EMP-105",
+    "review_period": "90_day",
+    "review_date": "2026-08-20",
+    "first_year_rating": 3.1,
+    "rating_label": "meets",
+    "reviewer_id": "HM-1",
+    "department": "Sales"
+  },
+  {
+    "id": "PERF-6006",
+    "employee_id": "EMP-106",
+    "review_period": "90_day",
+    "review_date": "2026-08-20",
+    "first_year_rating": 2.0,
+    "rating_label": "below",
+    "reviewer_id": "HM-1",
+    "department": "Customer Success"
+  },
+  {
+    "id": "PERF-6007",
+    "employee_id": "EMP-107",
+    "review_period": "90_day",
+    "review_date": "2026-08-20",
+    "first_year_rating": 4.0,
+    "rating_label": "meets",
+    "reviewer_id": "HM-1",
+    "department": "Product"
+  }
+]

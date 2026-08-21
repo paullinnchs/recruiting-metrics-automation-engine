@@ -1,0 +1,83 @@
+[
+  {
+    "id": "OFR-4001",
+    "candidate_id": "CAND-2001",
+    "req_id": "REQ-101",
+    "extended_at": "2026-08-03",
+    "outcome": "accepted",
+    "decline_reason": null,
+    "recruiter_id": "REC-1"
+  },
+  {
+    "id": "OFR-4002",
+    "candidate_id": "CAND-2005",
+    "req_id": "REQ-102",
+    "extended_at": "2026-08-01",
+    "outcome": "accepted",
+    "decline_reason": null,
+    "recruiter_id": "REC-1"
+  },
+  {
+    "id": "OFR-4003",
+    "candidate_id": "CAND-2009",
+    "req_id": "REQ-103",
+    "extended_at": "2026-08-01",
+    "outcome": "accepted",
+    "decline_reason": null,
+    "recruiter_id": "REC-1"
+  },
+  {
+    "id": "OFR-4004",
+    "candidate_id": "CAND-2013",
+    "req_id": "REQ-104",
+    "extended_at": "2026-08-03",
+    "outcome": "accepted",
+    "decline_reason": null,
+    "recruiter_id": "REC-1"
+  },
+  {
+    "id": "OFR-4005",
+    "candidate_id": "CAND-2017",
+    "req_id": "REQ-105",
+    "extended_at": "2026-08-06",
+    "outcome": "accepted",
+    "decline_reason": null,
+    "recruiter_id": "REC-2"
+  },
+  {
+    "id": "OFR-4006",
+    "candidate_id": "CAND-2021",
+    "req_id": "REQ-106",
+    "extended_at": "2026-08-01",
+    "outcome": "accepted",
+    "decline_reason": null,
+    "recruiter_id": "REC-3"
+  },
+  {
+    "id": "OFR-4007",
+    "candidate_id": "CAND-2025",
+    "req_id": "REQ-107",
+    "extended_at": "2026-08-06",
+    "outcome": "accepted",
+    "decline_reason": null,
+    "recruiter_id": "REC-2"
+  },
+  {
+    "id": "OFR-4008",
+    "candidate_id": "CAND-9001",
+    "req_id": "REQ-105",
+    "extended_at": "2026-08-05",
+    "outcome": "declined",
+    "decline_reason": "compensation",
+    "recruiter_id": "REC-2"
+  },
+  {
+    "id": "OFR-4009",
+    "candidate_id": "CAND-9002",
+    "req_id": "REQ-106",
+    "extended_at": "2026-07-31",
+    "outcome": "declined",
+    "decline_reason": "counteroffer",
+    "recruiter_id": "REC-3"
+  }
+]

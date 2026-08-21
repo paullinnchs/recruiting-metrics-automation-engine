@@ -40,7 +40,6 @@ CATEGORY_LABELS = {
         "Potential classification risk requiring review"
     ),
     "hours_variance": "Duplicate / unbilled hours",
-    "revenue_at_risk_fill": "Revenue-at-risk open fills",
 }
 
 SEVERITY_ICON = {

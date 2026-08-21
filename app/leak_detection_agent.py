@@ -14,7 +14,6 @@ from typing import Any
 import yaml
 
 from billing_connector import BillingConnector
-from ats_connector import ATSConnector
 
 logging.basicConfig(
     level=logging.INFO,

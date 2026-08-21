@@ -2,7 +2,7 @@
  * report_docx_template.js
  * -------------------------
  * Renders a leak_detection_agent JSON report into a branded,
- * client-ready Workforce Revenue Leak Audit .docx.
+ * client-ready Workforce Revenue Leak Workflow Sprint .docx.
  *
  * Usage:
  *   node report_docx_template.js <report.json> <client_name> <output.docx>
@@ -64,7 +64,6 @@ const CATEGORY_LABELS = {
   classification_risk:
     "Potential classification risk requiring review",
   hours_variance: "Unbilled / duplicate hours",
-  revenue_at_risk_fill: "Revenue-at-risk open fills",
 };
 
 const SEVERITY_ICON = {
@@ -510,7 +509,7 @@ const doc = new Document({
         ...logoHeader(),
 
         docTitle(
-          "Workforce Revenue Leak Audit"
+          "Workforce Revenue Leak Workflow Sprint"
         ),
 
         p(
@@ -549,7 +548,7 @@ const doc = new Document({
         }),
 
         p(
-          "This audit reviewed billing, timesheet, rate card, " +
+          "This Workflow Sprint reviewed billing, timesheet, rate card, " +
             "and contract data to identify potential revenue leakage " +
             "and operational risk across contingent workforce spend — " +
             "including missed markups, stale rate cards, off-contract " +

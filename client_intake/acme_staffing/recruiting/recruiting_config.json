@@ -1,0 +1,24 @@
+{
+  "headcount_override": 150,
+  "recruiting_spend_override": {
+    "job_boards": 6500,
+    "agency_fees": 22000,
+    "recruiter_salaries": 41000,
+    "tools_and_ats": 3200
+  },
+  "ad_spend_override": {
+    "linkedin": 3100,
+    "indeed": 1400,
+    "glassdoor": 300,
+    "employee_referral": 0
+  },
+  "funnel_stages": [
+    "applied",
+    "phone_screen",
+    "hiring_manager_review",
+    "interview",
+    "final_round",
+    "offer",
+    "hired"
+  ]
+}

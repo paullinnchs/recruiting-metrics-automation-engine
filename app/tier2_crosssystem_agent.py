@@ -19,9 +19,9 @@ from typing import Any
 
 import yaml
 
-from connectors.ats_connector import ATSConnector
-from connectors.hris_connector import HRISConnector
-from connectors.survey_connector import SurveyConnector
+from ats_connector import ATSConnector
+from hris_connector import HRISConnector
+from survey_connector import SurveyConnector
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)
@@ -363,7 +363,7 @@ def run():
     today = date.today().isoformat()
     out_path = out_dir / f"tier2_report_{today}.json"
     with open(out_path, "w") as f:
-        json.dump({"generated_at": datetime.utcnow().isoformat(), "tier": 2, "metrics": results},
+        json.dump({"generated_at": datetime.now().isoformat(), "tier": 2, "metrics": results},
                   f, indent=2, default=str)
 
     # Surface compliance flag
