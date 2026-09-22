@@ -341,9 +341,9 @@ const doc = new Document({
 
       h("Executive Summary"),
       p(
-        `This report combines recruiting performance analysis with the Workforce Revenue Leak ` +
-        `Workflow Sprint to give one consolidated view of operational and commercial risk. ` +
-        (rev.available ? `Total estimated financial exposure flagged: ${fmtUsd(rev.total_exposure)}. ` : "") +
+        (rev.available
+          ? `This report combines recruiting performance analysis with the Workforce Revenue Leak Workflow Sprint to give one consolidated view of operational and commercial risk. Total estimated financial exposure flagged: ${fmtUsd(rev.total_exposure)}. `
+          : `This report analyzes recruiting performance and operational exceptions to provide a consolidated view of recruiting performance, bottlenecks, and priority actions. `) +
         (data.recruiting.tier1_available ? `${(data.recruiting.tier1_alerts || []).length} recruiting alert(s) and ${ops ? ops.exception_count : 0} operational exception(s) this period.` : "")
       ),
 
