@@ -30,15 +30,140 @@ log = logging.getLogger(__name__)
 
 APP_PATH = Path(__file__).parent
 
+MAX_PRIORITY_ITEMS = 5
+SEVERITY_RANK = {"CRITICAL": 0, "WARNING": 1, "INFO": 2}
+
 
 # ──────────────────────────────────────────────
 # PRIORITY FINDINGS (ranked across both analysis areas)
 # ──────────────────────────────────────────────
 
+def _severity_rank(severity: str) -> int:
+    return SEVERITY_RANK.get(severity, 9)
+
+
+def _highest_severity(values: list[str]) -> str:
+    return sorted(values or ["INFO"], key=_severity_rank)[0]
+
+
+def _normalize_action(action: str) -> str:
+    return " ".join((action or "").strip().lower().split())
+
+
+def _build_operations_priority_item(ops: dict) -> dict | None:
+    exceptions = ops.get("exceptions", []) or []
+    if not exceptions:
+        return None
+
+    grouped: dict[tuple[str, str], dict] = {}
+    for ex in exceptions:
+        key = (
+            ex.get("exception_type", "operational_exception"),
+            ex.get("recommended_action", "Review the underlying records and decide next action."),
+        )
+        grouped.setdefault(key, {
+            "exception_type": key[0],
+            "action": key[1],
+            "count": 0,
+            "severities": [],
+        })
+        grouped[key]["count"] += 1
+        grouped[key]["severities"].append(ex.get("severity", "WARNING"))
+
+    groups = sorted(
+        grouped.values(),
+        key=lambda g: (
+            _severity_rank(_highest_severity(g["severities"])),
+            -g["count"],
+            g["exception_type"],
+        ),
+    )
+    top_groups = groups[:3]
+    severity = _highest_severity([s for g in groups for s in g["severities"]])
+    type_count = len({ex.get("exception_type", "operational_exception") for ex in exceptions})
+    top_types = ", ".join(
+        f"{g['exception_type'].replace('_', ' ')} ({g['count']})"
+        for g in top_groups
+    )
+
+    return {
+        "area": "operations",
+        "severity": severity,
+        "label": "Recruiting Operations Exceptions",
+        "detail": (
+            f"{len(exceptions)} record-level operational exception(s) were detected across "
+            f"{type_count} exception type(s). Highest-priority patterns: {top_types}. "
+            "See Recruiting Operations Exceptions for record-level detail."
+        ),
+        "action": top_groups[0]["action"],
+        "dollar_impact": None,
+    }
+
+
+def _build_revenue_priority_items(revenue: dict) -> list[dict]:
+    grouped: dict[str, dict] = {}
+    for finding in revenue.get("findings") or []:
+        if finding.get("severity") not in ("CRITICAL", "WARNING"):
+            continue
+        category = finding.get("category", "revenue_risk")
+        grouped.setdefault(category, {
+            "category": category,
+            "count": 0,
+            "dollar_impact": 0,
+            "severities": [],
+            "descriptions": [],
+            "actions": [],
+        })
+        grouped[category]["count"] += 1
+        grouped[category]["dollar_impact"] += finding.get("dollar_impact") or 0
+        grouped[category]["severities"].append(finding.get("severity", "WARNING"))
+        if finding.get("description"):
+            grouped[category]["descriptions"].append(finding["description"])
+        if finding.get("recommendation"):
+            grouped[category]["actions"].append(finding["recommendation"])
+
+    items = []
+    for category, group in grouped.items():
+        detail = (
+            f"{group['count']} revenue/commercial finding(s) in this category with "
+            f"${group['dollar_impact']:,.2f} in estimated exposure."
+        )
+        if group["descriptions"]:
+            detail += f" Example: {group['descriptions'][0]}"
+        items.append({
+            "area": "revenue",
+            "severity": _highest_severity(group["severities"]),
+            "label": REVENUE_CATEGORY_LABELS.get(category, category),
+            "detail": detail,
+            "action": group["actions"][0] if group["actions"] else "",
+            "dollar_impact": round(group["dollar_impact"], 2),
+        })
+    return items
+
+
+def _dedupe_actions(items: list[dict]) -> list[dict]:
+    seen = set()
+    deduped = []
+    for item in items:
+        action_key = _normalize_action(item.get("action", ""))
+        if action_key and action_key in seen:
+            item = dict(item)
+            item["action"] = ""
+        elif action_key:
+            seen.add(action_key)
+        deduped.append(item)
+    return deduped
+
+
 def build_priority_items(consolidated: dict) -> list[dict]:
     items = []
 
     recruiting = consolidated.get("recruiting", {})
+    ops = recruiting.get("operational_exceptions") or {}
+    ops_item = _build_operations_priority_item(ops)
+    if ops_item:
+        items.append(ops_item)
+
     for a in recruiting.get("tier1_alerts", []) or []:
         ctx = METRIC_BUSINESS_CONTEXT.get(a.get("metric", ""), {})
         items.append({
@@ -65,20 +190,10 @@ def build_priority_items(consolidated: dict) -> list[dict]:
         })
 
     revenue = consolidated.get("revenue", {})
-    for f in (revenue.get("findings") or []):
-        if f.get("severity") in ("CRITICAL", "WARNING"):
-            items.append({
-                "area": "revenue",
-                "severity": f["severity"],
-                "label": REVENUE_CATEGORY_LABELS.get(f["category"], f["category"]),
-                "detail": f.get("description", ""),
-                "action": f.get("recommendation", ""),
-                "dollar_impact": f.get("dollar_impact"),
-            })
+    items.extend(_build_revenue_priority_items(revenue))
 
-    severity_rank = {"CRITICAL": 0, "WARNING": 1, "INFO": 2}
-    items.sort(key=lambda x: (severity_rank.get(x["severity"], 9), -(x["dollar_impact"] or 0)))
-    return items
+    items.sort(key=lambda x: (_severity_rank(x["severity"]), -(x["dollar_impact"] or 0)))
+    return _dedupe_actions(items[:MAX_PRIORITY_ITEMS])
 
 
 # ──────────────────────────────────────────────
@@ -133,6 +248,22 @@ def build_working_copy_markdown(consolidated: dict, priority_items: list[dict]) 
         lines.append(f"Tier 2 metrics computed: {len(recruiting['tier2'])}.")
     else:
         lines.append("Tier 2 recruiting analysis unavailable — required intake files missing.")
+
+    ops = recruiting.get("operational_exceptions") or {}
+    lines.append("")
+    lines.append("## Recruiting Operations Exceptions")
+    if ops:
+        lines.append(f"Operational exceptions generated: {ops.get('exception_count', 0)}.")
+        for ex in (ops.get("exceptions") or [])[:20]:
+            target = ex.get("req_id") or ex.get("candidate_id") or ex.get("recruiter_id") or "overall"
+            lines.append(
+                f"- [{ex.get('severity')}] {ex.get('exception_type')} ({target}): "
+                f"{ex.get('observed_evidence')} Action: {ex.get('recommended_action')}"
+            )
+        for skipped in ops.get("not_evaluated") or []:
+            lines.append(f"- [not evaluated] {skipped.get('exception_type')}: {skipped.get('reason')}")
+    else:
+        lines.append("Operational exception analysis unavailable - Tier 1 recruiting intake was not available.")
 
     lines.append("")
     lines.append("## Revenue Leakage / Commercial Risk")

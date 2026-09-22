@@ -9,6 +9,7 @@
     "closed_at": "2026-08-03",
     "close_reason": "filled",
     "offer_accepted_at": "2026-08-03",
+    "priority": "normal",
     "recruiter_id": "REC-1",
     "hiring_manager_id": "HM-1"
   },
@@ -22,6 +23,7 @@
     "closed_at": "2026-08-01",
     "close_reason": "filled",
     "offer_accepted_at": "2026-08-01",
+    "priority": "normal",
     "recruiter_id": "REC-1",
     "hiring_manager_id": "HM-1"
   },
@@ -35,6 +37,7 @@
     "closed_at": "2026-08-01",
     "close_reason": "filled",
     "offer_accepted_at": "2026-08-01",
+    "priority": "normal",
     "recruiter_id": "REC-1",
     "hiring_manager_id": "HM-1"
   },
@@ -48,6 +51,7 @@
     "closed_at": "2026-08-03",
     "close_reason": "filled",
     "offer_accepted_at": "2026-08-03",
+    "priority": "normal",
     "recruiter_id": "REC-1",
     "hiring_manager_id": "HM-1"
   },
@@ -61,6 +65,7 @@
     "closed_at": "2026-08-06",
     "close_reason": "filled",
     "offer_accepted_at": "2026-08-06",
+    "priority": "normal",
     "recruiter_id": "REC-2",
     "hiring_manager_id": "HM-2"
   },
@@ -74,6 +79,7 @@
     "closed_at": "2026-08-01",
     "close_reason": "filled",
     "offer_accepted_at": "2026-08-01",
+    "priority": "normal",
     "recruiter_id": "REC-3",
     "hiring_manager_id": "HM-3"
   },
@@ -87,6 +93,7 @@
     "closed_at": "2026-08-06",
     "close_reason": "filled",
     "offer_accepted_at": "2026-08-06",
+    "priority": "normal",
     "recruiter_id": "REC-2",
     "hiring_manager_id": "HM-2"
   },
@@ -100,6 +107,7 @@
     "closed_at": "2026-08-11",
     "close_reason": "cancelled",
     "offer_accepted_at": null,
+    "priority": "normal",
     "recruiter_id": "REC-2",
     "hiring_manager_id": "HM-2"
   },
@@ -113,6 +121,7 @@
     "closed_at": "2026-08-13",
     "close_reason": "cancelled",
     "offer_accepted_at": null,
+    "priority": "normal",
     "recruiter_id": "REC-3",
     "hiring_manager_id": "HM-3"
   },
@@ -126,6 +135,7 @@
     "closed_at": "2026-08-15",
     "close_reason": "cancelled",
     "offer_accepted_at": null,
+    "priority": "normal",
     "recruiter_id": "REC-3",
     "hiring_manager_id": "HM-3"
   },
@@ -134,11 +144,12 @@
     "title": "Recruiting Coordinator",
     "department": "Talent Acquisition",
     "location": "Remote",
-    "status": "cancelled",
+    "status": "open",
     "approved_at": "2026-07-27",
-    "closed_at": "2026-08-17",
-    "close_reason": "cancelled",
+    "closed_at": null,
+    "close_reason": null,
     "offer_accepted_at": null,
+    "priority": "normal",
     "recruiter_id": "REC-1",
     "hiring_manager_id": "HM-1"
   },
@@ -152,6 +163,7 @@
     "closed_at": null,
     "close_reason": null,
     "offer_accepted_at": null,
+    "priority": "critical",
     "recruiter_id": "REC-1",
     "hiring_manager_id": "HM-1"
   },
@@ -165,6 +177,7 @@
     "closed_at": null,
     "close_reason": null,
     "offer_accepted_at": null,
+    "priority": "high",
     "recruiter_id": "REC-2",
     "hiring_manager_id": "HM-2"
   }

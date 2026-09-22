@@ -105,6 +105,11 @@ function footer() {
 function fmtPct(v) { return v === null || v === undefined ? "\u2014" : `${v}%`; }
 function fmtNum(v) { return v === null || v === undefined ? "\u2014" : `${v}`; }
 function fmtUsd(v) { return v === null || v === undefined ? "\u2014" : `$${Number(v).toLocaleString(undefined, { minimumFractionDigits: 2 })}`; }
+function areaLabel(area) {
+  if (area === "revenue") return "Revenue";
+  if (area === "operations") return "Operations";
+  return "Recruiting";
+}
 
 const now = new Date();
 const today = `${String(now.getMonth() + 1).padStart(2, "0")}/${String(now.getDate()).padStart(2, "0")}/${now.getFullYear()}`;
@@ -217,6 +222,36 @@ if (data.recruiting.tier2_available && t2) {
   recruitingBlocks.push(p("Tier 2 recruiting analysis unavailable — required intake files were not provided.", { italics: true, color: GRAY }));
 }
 
+// ── RECRUITING OPERATIONS EXCEPTIONS ──
+
+const ops = data.recruiting.operational_exceptions || null;
+let opsBlocks = [];
+if (ops) {
+  const exceptions = ops.exceptions || [];
+  if (exceptions.length) {
+    opsBlocks.push(p(`${exceptions.length} operational exception(s) generated from underlying requisition, candidate, offer, application, and activity records.`, { bold: true, color: NAVY }));
+    for (const ex of exceptions.slice(0, 12)) {
+      const target = ex.req_id || ex.candidate_id || ex.recruiter_id || "overall";
+      opsBlocks.push(new Paragraph({
+        spacing: { before: 140, after: 50 },
+        children: [
+          new TextRun({ text: `${SEVERITY_ICON[ex.severity] || "\u26AA"}  `, size: 21 }),
+          new TextRun({ text: `${ex.exception_type.replace(/_/g, " ")} (${target})`, bold: true, color: NAVY, size: 21 }),
+        ],
+      }));
+      opsBlocks.push(p(ex.observed_evidence || ""));
+      opsBlocks.push(p(`Recommended action: ${ex.recommended_action || "Review underlying records."}`, { italics: true, color: GRAY }));
+    }
+  } else {
+    opsBlocks.push(p("No operational exceptions generated from available records.", { italics: true, color: GRAY }));
+  }
+  for (const skipped of (ops.not_evaluated || [])) {
+    opsBlocks.push(p(`Not evaluated - ${skipped.exception_type}: ${skipped.reason}`, { italics: true, color: GRAY }));
+  }
+} else {
+  opsBlocks.push(p("Operational exception analysis unavailable because Tier 1 recruiting data was unavailable.", { italics: true, color: GRAY }));
+}
+
 // ── REVENUE LEAKAGE / WORKFLOW SPRINT ──
 
 let revenueBlocks = [];
@@ -257,17 +292,17 @@ if (rev.available) {
 
 // ── PRIORITY FINDINGS (pre-ranked in Python) ──
 
-const priorityItems = data.priority_items || [];
+const priorityItems = (data.priority_items || []).slice(0, 5);
 let priorityBlocks = [];
 if (priorityItems.length) {
-  for (const it of priorityItems.slice(0, 12)) {
+  for (const it of priorityItems) {
     const icon = SEVERITY_ICON[it.severity] || "\u26AA";
     const impactStr = it.dollar_impact ? fmtUsd(it.dollar_impact) : (it.area === "revenue" ? "n/a" : "");
     priorityBlocks.push(new Paragraph({
       spacing: { before: 160, after: 50 },
       children: [
         new TextRun({ text: `${icon}  `, size: 22 }),
-        new TextRun({ text: `[${it.area === "revenue" ? "Revenue" : "Recruiting"}] `, bold: true, color: GRAY, size: 20 }),
+        new TextRun({ text: `[${areaLabel(it.area)}] `, bold: true, color: GRAY, size: 20 }),
         new TextRun({ text: it.label, bold: true, color: NAVY, size: 22 }),
         impactStr ? new TextRun({ text: `  —  ${impactStr}`, bold: true, color: CORAL, size: 22 }) : new TextRun({ text: "" }),
       ],
@@ -282,8 +317,13 @@ if (priorityItems.length) {
 
 let actionBlocks = [];
 if (priorityItems.length) {
-  for (const it of priorityItems.slice(0, 12)) {
-    if (it.action) actionBlocks.push(bullet(it.action));
+  const seenActions = new Set();
+  for (const it of priorityItems) {
+    const actionKey = (it.action || "").trim().toLowerCase().replace(/\s+/g, " ");
+    if (it.action && !seenActions.has(actionKey)) {
+      seenActions.add(actionKey);
+      actionBlocks.push(bullet(it.action));
+    }
   }
 } else {
   actionBlocks.push(p("No immediate actions required based on current findings.", { italics: true, color: GRAY }));
@@ -304,7 +344,7 @@ const doc = new Document({
         `This report combines recruiting performance analysis with the Workforce Revenue Leak ` +
         `Workflow Sprint to give one consolidated view of operational and commercial risk. ` +
         (rev.available ? `Total estimated financial exposure flagged: ${fmtUsd(rev.total_exposure)}. ` : "") +
-        (data.recruiting.tier1_available ? `${(data.recruiting.tier1_alerts || []).length} recruiting alert(s) this period.` : "")
+        (data.recruiting.tier1_available ? `${(data.recruiting.tier1_alerts || []).length} recruiting alert(s) and ${ops ? ops.exception_count : 0} operational exception(s) this period.` : "")
       ),
 
       h("Data Coverage"),
@@ -313,6 +353,9 @@ const doc = new Document({
 
       h("Recruiting Performance"),
       ...recruitingBlocks,
+
+      h("Recruiting Operations Exceptions"),
+      ...opsBlocks,
 
       h("Revenue Leakage / Commercial Risk — Workforce Revenue Leak Workflow Sprint"),
       ...revenueBlocks,

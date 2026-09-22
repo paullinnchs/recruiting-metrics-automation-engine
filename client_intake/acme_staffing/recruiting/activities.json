@@ -1,0 +1,65 @@
+[
+  {
+    "id": "ACT-5001",
+    "req_id": "REQ-112",
+    "candidate_id": "CAND-2045",
+    "event_type": "stage_change",
+    "occurred_at": "2026-08-20",
+    "recruiter_id": "REC-1",
+    "description": "Moved to hiring manager review"
+  },
+  {
+    "id": "ACT-5002",
+    "req_id": "REQ-112",
+    "candidate_id": "CAND-2045",
+    "event_type": "email",
+    "occurred_at": "2026-09-12",
+    "recruiter_id": "REC-1",
+    "description": "Follow-up sent to candidate"
+  },
+  {
+    "id": "ACT-5003",
+    "req_id": "REQ-112",
+    "candidate_id": "CAND-2045",
+    "event_type": "note",
+    "occurred_at": "2026-09-15",
+    "recruiter_id": "REC-1",
+    "description": "Awaiting hiring manager feedback"
+  },
+  {
+    "id": "ACT-5004",
+    "req_id": "REQ-112",
+    "candidate_id": "CAND-2045",
+    "event_type": "call",
+    "occurred_at": "2026-09-19",
+    "recruiter_id": "REC-1",
+    "description": "Candidate check-in completed"
+  },
+  {
+    "id": "ACT-5005",
+    "req_id": "REQ-112",
+    "candidate_id": "CAND-2046",
+    "event_type": "interview",
+    "occurred_at": "2026-09-08",
+    "recruiter_id": "REC-1",
+    "description": "Technical interview completed"
+  },
+  {
+    "id": "ACT-5006",
+    "req_id": "REQ-113",
+    "candidate_id": "CAND-2048",
+    "event_type": "stage_change",
+    "occurred_at": "2026-08-25",
+    "recruiter_id": "REC-2",
+    "description": "Moved to hiring manager review"
+  },
+  {
+    "id": "ACT-5007",
+    "req_id": "REQ-113",
+    "candidate_id": "CAND-2049",
+    "event_type": "interview",
+    "occurred_at": "2026-09-11",
+    "recruiter_id": "REC-2",
+    "description": "Interview completed"
+  }
+]
