@@ -26,12 +26,13 @@ Let it run in front of them — it completes in a few seconds. Narrate what's ha
 
 - "It's checking what data is actually available..."
 - "Now it's running the recruiting analysis..."
+- "Now it's checking the underlying requisition, candidate, offer, application, and activity records for operational exceptions..."
 - "Now the revenue analysis..."
 - "And now it's building the one combined report."
 
 ## Step 3 — Show Validation
 
-Point to the console output showing Tier 1 / Tier 2 / Revenue each marked "available." Explain: *if any of these were missing, it would say so right here, and the report would clearly show that section as unavailable instead of guessing.* This is a good moment to mention that the same engine handles a partial intake gracefully — it doesn't need perfect data to be useful.
+Point to the console output showing Tier 1 / Tier 2 / Revenue each marked "available," followed by the operational-exception result. Explain: *if required data for an analysis or exception type were missing, the engine would mark that analysis unavailable or that exception type not evaluated instead of guessing.* This is a good moment to mention that the engine handles a partial intake gracefully — it doesn't need perfect data to be useful.
 
 ## Step 4 — Show Recruiting Intelligence
 
@@ -41,12 +42,28 @@ Open the generated report and walk to the Recruiting Performance section. Highli
 - Offer Acceptance Rate and Fill Rate, each flagged against a threshold rather than shown as a raw number
 - First-Year Attrition and Quality of Hire, from the deeper Tier 2 layer
 
+Then move to **Recruiting Operations Exceptions**. This is the record-level layer beneath the KPIs. Show examples such as:
+
+- aging requisitions
+- high-priority requisitions lacking activity
+- stalled candidates
+- offer-acceptance exceptions
+- recruiter workload concentration
+- activity without progression
+- low candidate flow
+
+Emphasize that the engine identifies the affected requisition, candidate, or recruiter, shows the evidence behind the exception, and provides a recommended human action. The goal is not just to report that a metric is off target; it is to surface where the operation is getting stuck and what should be reviewed next.
+
 ## Step 5 — Show Revenue Exposure
 
-Move to the Revenue Leakage section. Point to the headline number:
+If revenue data is part of the engagement, move to the Revenue Leakage section. Point to the headline number:
 
-**$48,360 in revenue exposure identified**, broken into specific categories — missed markup, stale rate cards, off-contract spend, a classification-risk flag, and unbilled hours.
+**$48,360 in revenue exposure identified** in the Acme sample, broken into specific categories — missed markup, stale rate cards, off-contract spend, a classification-risk flag, and unbilled hours.
+
+Revenue analysis is an additional module when the relevant billing, contract, rate-card, and timesheet data is available; the recruiting-operations analysis can still stand on its own.
 
 ## Step 6 — Show Consolidated Report
 
-Zoom out to the whole document. Emphasize: *this is one report, generated from one intake, in one run — not two teams producing two separate spreadsheets that someone then has to reconcile by hand.* Close on the Priority Findings section, which ranks issues from both analysis areas together, and the Recommended Actions that follow directly from them.
+Zoom out to the whole document. Emphasize: *this is one report, generated from one intake, in one run.* The report moves from recruiting KPIs to record-level operational exceptions and, when applicable, commercial risk.
+
+Close on the **Priority Findings** section, which reduces the detailed analysis to the highest-priority executive issues, and the **Recommended Actions** section, which gives a concise set of next steps without repeating every exception.
