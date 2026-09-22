@@ -85,6 +85,37 @@ recruiter_performance:
   min_fill_rate_pct: 70          # flag recruiters below this
   max_avg_tth_days: 30
 
+# V1 deterministic operational exception rules
+operational_exceptions:
+  aging_requisitions:
+    warning_days_open: 30
+    critical_days_open: 45
+  low_candidate_flow:
+    min_applications: 5
+    after_days_open: 14
+  stalled_candidates:
+    warning_days_in_stage: 10
+    critical_days_in_stage: 21
+  weak_funnel_conversion:
+    min_stage_conversion_pct: 40
+    min_prior_stage_count: 5
+  offer_acceptance_exception:
+    warning_pct: 85
+    critical_pct: 75
+    min_offers: 2
+  recruiter_workload_concentration:
+    min_open_reqs: 3
+    warning_share_pct: 50
+    critical_share_pct: 65
+  high_priority_lacking_activity:
+    priority_values: ["high", "critical"]
+    max_days_since_activity: 7
+  activity_without_progression:
+    min_activity_events: 3
+    window_days: 14
+    non_progression_event_types: ["note", "email", "call", "task"]
+    progression_event_types: ["stage_change", "interview", "offer"]
+
 # ── TIER 3: PARTIAL AUTOMATION ────────────────
 
 hiring_manager_satisfaction:

@@ -40,6 +40,7 @@ import tier1_ats_agent as t1
 import tier2_crosssystem_agent as t2
 import leak_detection_agent as leak
 import consolidated_report_generator as report_gen
+import operational_exceptions as ops
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)
@@ -189,14 +190,23 @@ def run_client_analysis(intake_dir: str) -> dict:
 
     tier1_results, tier1_alerts = (None, [])
     tier2_results = None
+    operational_results = None
     revenue_results = None
 
+    thresholds = {}
     if validation["recruiting_tier1"]["available"]:
         thresholds_path = CONFIG_PATH / "thresholds.yaml"
         with open(thresholds_path) as f:
             thresholds = yaml.safe_load(f)
         tier1_results, tier1_alerts = run_tier1(recruiting_data, thresholds)
         log.info(f"Tier 1 complete — {len(tier1_results)} metrics, {len(tier1_alerts)} alerts")
+
+        operational_results = ops.analyze(recruiting_data, thresholds)
+        log.info(
+            f"Operational exceptions complete — "
+            f"{operational_results['exception_count']} exceptions, "
+            f"{len(operational_results['not_evaluated'])} not evaluated"
+        )
 
     if validation["recruiting_tier2"]["available"]:
         tier2_results = run_tier2(recruiting_data)
@@ -217,6 +227,7 @@ def run_client_analysis(intake_dir: str) -> dict:
             "tier1": tier1_results,
             "tier1_alerts": tier1_alerts,
             "tier2": tier2_results,
+            "operational_exceptions": operational_results,
         },
         "revenue": {
             "available": validation["revenue"]["available"],

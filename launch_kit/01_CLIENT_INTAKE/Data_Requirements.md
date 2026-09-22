@@ -27,6 +27,7 @@ All files live under `client_intake/<client_id>/`, split into `recruiting/` and 
 | `closed_at` | Date the req closed (filled or cancelled) | ISO date string, or `null` if still open |
 | `close_reason` | `"filled"` \| `"cancelled"` \| `null` | string or null |
 | `offer_accepted_at` | Date the accepted offer was signed | ISO date string, or `null` |
+| `priority` | Optional priority for operational exception analysis (`"normal"`, `"high"`, `"critical"`, etc.) | string or `null` |
 | `recruiter_id` | Owning recruiter | string |
 | `hiring_manager_id` | Hiring manager | string |
 
@@ -47,6 +48,8 @@ All files live under `client_intake/<client_id>/`, split into `recruiting/` and 
 | `hire_date` | Hire date, if hired | ISO date string or `null` |
 | `offer_accepted_at` | Offer acceptance date, if hired | ISO date string or `null` |
 | `furthest_stage` | Furthest pipeline stage reached | string |
+| `current_stage` | Current active pipeline stage, used for stalled-candidate exceptions | string or `null` |
+| `current_stage_entered_at` | Date the candidate entered the current stage | ISO date string or `null` |
 | `stage_gaps` | List of `{"stage": str, "days": int}` | array |
 | `employee_id` | **Shared identifier into HRIS data** — required on every hired candidate for Tier 2 to join correctly | string or `null` |
 | `recruiter_id` | Owning recruiter | string |
@@ -82,6 +85,20 @@ All files live under `client_intake/<client_id>/`, split into `recruiting/` and 
 | `recruiter_id` | Owning recruiter | string |
 
 **Used by:** Offer Acceptance Rate.
+
+### `activities.json` — optional
+
+| Field | Definition | Format |
+|---|---|---|
+| `id` | Activity/event ID | string |
+| `req_id` | Links to requisition | string |
+| `candidate_id` | Links to candidate, when candidate-specific | string or `null` |
+| `event_type` | Deterministic event type, e.g. `"note"`, `"email"`, `"call"`, `"task"`, `"stage_change"`, `"interview"`, `"offer"` | string |
+| `occurred_at` | Date the activity occurred | ISO date string |
+| `recruiter_id` | Owning recruiter | string or `null` |
+| `description` | Human-readable activity note | string or `null` |
+
+**Used by:** High-priority requisitions lacking activity and Activity without progression. If this file is absent, those detections are marked not evaluated rather than inferred from other fields.
 
 ### `sessions.json` — optional
 
@@ -149,7 +166,13 @@ All files live under `client_intake/<client_id>/`, split into `recruiting/` and 
 
 ### `recruiting_config.json` — optional
 
-Overrides for `headcount_override`, `recruiting_spend_override`, `ad_spend_override`, `funnel_stages`. If omitted, system defaults are used (see `app/main.py`). Affects % Open Positions, Cost per Hire, Sourcing Channel Cost, and Recruitment Funnel accuracy — not their availability.
+Overrides for `headcount_override`, `recruiting_spend_override`, `ad_spend_override`, `funnel_stages`. If omitted, system defaults are used (see `app/main.py`). Affects % Open Positions, Cost per Hire, Sourcing Channel Cost, Recruitment Funnel accuracy, and weak-funnel operational exception analysis — not their availability.
+
+### Operational Exception Analysis
+
+The V1 operational exception layer runs deterministically when Tier 1 recruiting intake is available. It uses the existing requisition, candidate, application, and offer records, plus optional `activities.json` where activity-based checks require explicit events. Thresholds live in `config/thresholds.yaml` under `operational_exceptions`.
+
+If a required field or optional activity file is missing for a specific detection, that detection is marked `not_evaluated`; the engine does not infer priority, activity, or stage-entry dates from unrelated records.
 
 ---
 

@@ -16,6 +16,7 @@ Expected intake structure:
             applications.json       required for Tier 1
             offers.json             required for Tier 1
             sessions.json           optional (application completion rate only)
+            activities.json         optional (operational-exception activity checks)
             hris_employees.json     required for Tier 2 (in addition to Tier 1 files)
             hris_performance.json   required for Tier 2
             survey_responses.json   required for Tier 2
@@ -36,7 +37,7 @@ from pathlib import Path
 log = logging.getLogger(__name__)
 
 TIER1_REQUIRED = ["requisitions.json", "candidates.json", "applications.json", "offers.json"]
-TIER1_OPTIONAL = ["sessions.json", "recruiting_config.json"]
+TIER1_OPTIONAL = ["sessions.json", "activities.json", "recruiting_config.json"]
 TIER2_REQUIRED_ADDITIONAL = ["hris_employees.json", "hris_performance.json", "survey_responses.json"]
 REVENUE_REQUIRED = ["billing_data.csv", "rate_cards.csv", "contracts.csv"]
 
@@ -87,6 +88,7 @@ def validate_intake(intake_dir: str | Path) -> dict:
             "present": t1_present + t1_opt_present,
             "missing": t1_missing,
             "has_sessions": "sessions.json" in t1_opt_present,
+            "has_activities": "activities.json" in t1_opt_present,
         },
         "recruiting_tier2": {
             "available": tier2_available,
@@ -117,7 +119,7 @@ def load_recruiting_data(intake_dir: str | Path, validation: dict) -> dict:
     """
     recruiting_dir = Path(intake_dir) / "recruiting"
     data = {
-        "reqs": [], "candidates": [], "applications": [], "offers": [], "sessions": [],
+        "reqs": [], "candidates": [], "applications": [], "offers": [], "sessions": [], "activities": [],
         "hris_employees": [], "hris_performance": [], "survey_responses": [],
         "config": {},
     }
@@ -129,6 +131,8 @@ def load_recruiting_data(intake_dir: str | Path, validation: dict) -> dict:
         data["offers"] = _load_json(recruiting_dir / "offers.json")
         if validation["recruiting_tier1"]["has_sessions"]:
             data["sessions"] = _load_json(recruiting_dir / "sessions.json")
+        if validation["recruiting_tier1"]["has_activities"]:
+            data["activities"] = _load_json(recruiting_dir / "activities.json")
 
     if validation["recruiting_tier2"]["available"]:
         data["hris_employees"] = _load_json(recruiting_dir / "hris_employees.json")
